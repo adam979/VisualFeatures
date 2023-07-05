@@ -104,10 +104,6 @@ The `SwinV2` class in the `swinv2.py` script encapsulates the SwinV2 model and p
 
 - torchvision Documentation: [https://pytorch.org/vision/stable/index.html](https://pytorch.org/vision/stable/index.html)
 
-Please note that this README provides a high-level overview of the project. For more detailed explanations, refer to the source code and relevant documentation.
 
----
-
-*Note: Make sure to include the necessary license information, acknowledgments, and any additional details specific to your project in the README.md file.*
 
 
