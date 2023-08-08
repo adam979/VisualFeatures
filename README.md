@@ -1,53 +1,109 @@
-# README
+# Visual Features Extraction using Swin Transformer
 
-This repository contains the code for preparing and loading the Indiana Chest X-ray dataset using PyTorch and the Swin Transformer model.
+This project demonstrates the extraction of visual features using the Swin Transformer model. It provides Python scripts for data loading, dataset preparation, and the SwinV2 model implementation. Additionally, it includes the necessary dataset files: `indiana_reports.csv` and `indiana_projections.csv`.
 
-## Files
+## Table of Contents
 
-1. `datasetprep.py`: This script prepares the dataset by organizing the images into train, validation, and test directories based on the provided CSV files. It reads the projection and report information from the CSV files and copies the images to the appropriate directories. The split of the dataset into train, validation, and test sets is done using the `train_test_split` function from scikit-learn.
+- [Introduction](#introduction)
+- [Dependencies](#dependencies)
+- [Usage](#usage)
+- [Scripts](#scripts)
+- [Dataset](#dataset)
+- [Model](#model)
+- [References](#references)
 
-2. `dataloader.py`: This script loads and preprocesses the prepared dataset using PyTorch's `datasets` module. It defines the transformations applied to each image, loads the train, validation, and test datasets, creates data loaders for iterating over the datasets, and extracts visual features using the Swin Transformer model.
+## Introduction
 
-3. `swin_model.py`: This script contains the implementation of the Swin Transformer model. It includes the definition of the SwinTransformer class and the function `extract_visual_features` for extracting visual features from images using the Swin Transformer model.
+Visual feature extraction is a crucial step in many computer vision tasks. The Swin Transformer is a state-of-the-art deep learning model that has shown excellent performance in various vision tasks, including image classification. This project demonstrates how to use the Swin Transformer model to extract visual features from images.
 
-## Dataset Preparation
+The project consists of three main scripts:
 
-The `datasetprep.py` script is used to prepare the dataset for training the Swin Transformer model. It expects the following files:
+1. `dataloading.py`: Loads the dataset, applies necessary transformations, and creates data loaders for training, validation, and testing.
+2. `datasetprep.py`: Prepares the dataset by organizing the images into train, validation, and test directories based on CSV files containing projection information and reports.
+3. `swinv2.py`: Implements the SwinV2 model, which is a modified version of the Swin Transformer for visual feature extraction.
 
-- `indiana_projections.csv`: This CSV file contains the projection information for the images, including the UID, filename, and projection type.
+## Dependencies
 
-- `indiana_reports.csv`: This CSV file contains the report information for the images, including the UID, findings, and impression.
+To run the scripts in this project, the following dependencies are required:
 
-The script creates the train, validation, and test directories if they don't exist. It reads the projection and report information from the CSV files and organizes the images into the appropriate directories based on the UID and the split of the dataset.
+- Python 3.x
+- PyTorch
+- torchvision
+- scikit-learn
+- tqdm
+- pandas
 
-## Data Loading and Preprocessing
 
-The `dataloader.py` script is responsible for loading and preprocessing the prepared dataset using PyTorch. It performs the following steps:
+## Usage
 
-1. Sets the paths for the dataset directories.
+To use this project, follow the steps below:
 
-2. Defines the transformations applied to each image, including resizing, conversion to tensor, adaptive histogram equalization, and normalization.
+1. Prepare the dataset by organizing the images into the appropriate directories using the `datasetprep.py` script. Make sure to place the `indiana_reports.csv` and `indiana_projections.csv` files in the same directory as the script.
 
-3. Loads the train, validation, and test datasets using PyTorch's `ImageFolder` class and applies the defined transformations.
+2. Run the `dataloading.py` script to load the dataset, apply transformations, and create data loaders for training, validation, and testing. Adjust the batch size, number of workers, and other parameters according to your needs.
 
-4. Creates data loaders for iterating over the datasets, specifying the batch size and number of workers.
+3. Customize the `swinv2.py` script if necessary, such as modifying the model architecture or adjusting the pre-trained weights.
 
-5. Defines the Swin Transformer model using the `SwinTransformer` class from `swin_model.py`.
+4. Execute the `dataloading.py` script to extract visual features from the images using the SwinV2 model. The extracted features will be saved as `.pt` files for future use.
 
-6. Extracts visual features from the train, validation, and test datasets using the Swin Transformer model and the `extract_visual_features` function.
+## Scripts
 
-7. Saves the extracted features and labels as PyTorch tensors for future use.
+### `dataloading.py`
 
-## Model Training
+This script loads the dataset, applies transformations, and creates data loaders for training, validation, and testing. The main function performs the following steps:
 
-To train the Swin Transformer model using the prepared dataset, you can follow these steps:
+1. Initialize the SwinV2 model.
 
-1. Run the `datasetprep.py` script to prepare the dataset.
+2. Extract visual features using the SwinV2 model and the provided data loaders.
 
-2. Run the `dataloader.py` script to load and preprocess the prepared dataset.
+3. Save the extracted features and labels as `.pt` files for future use.
 
-3. Implement the training loop and model training code based on your specific requirements. You can use the extracted features and labels obtained from the data loader for training the model.
+### `datasetprep.py`
 
-4. Evaluate the trained model using the validation set and make predictions on the test set.
+This script prepares the dataset by organizing the images into train, validation, and test directories based on the `indiana_reports.csv` and `indiana_projections.csv` files. The main function performs the following steps:
 
-5. Fine-tune the model and iterate on the training process as needed.
+1. Read the projection information from `indiana_projections.csv` and store it in a dictionary.
+
+2. Read the report information from `indiana_reports.csv` and store it in a dictionary.
+
+3. Split the UIDs into train, validation, and test sets.
+
+4. Copy the images to the appropriate directories based on their UIDs and projection information(continued)
+
+### `swinv2.py`
+
+This script implements the SwinV2 model, which is a modified version of the Swin Transformer specifically designed for visual feature extraction. The SwinV2 class inherits from `torch.nn.Module` and consists of the following components:
+
+1. The Swin Transformer backbone: This is the core of the model and is responsible for extracting visual features from input images. It utilizes the Swin Transformer architecture with specific configurations for patch size, embedding dimension, depths, number of heads, window size, MLP ratio, stochastic depth probability, and number of classes.
+
+2. Loading pre-trained weights (optional): The SwinV2 constructor allows you to load pre-trained weights for the backbone using the `weights` parameter. It uses the `torch.hub.load_state_dict_from_url` function to download the pre-trained weights if a URL is provided.
+
+3. Forward pass: The forward method takes input images and passes them through the backbone to extract visual features. It returns the extracted features.
+
+4. Feature extraction helper function: The `extract_visual_features` function takes a batch of images and the SwinV2 model and extracts visual features using the model. It returns the extracted features.
+
+## Dataset
+
+The dataset used in this project consists of medical images and associated reports. It includes two CSV files:
+
+- `indiana_reports.csv`: This file contains information about the reports associated with the images. It includes UIDs, findings, and impressions.
+
+- `indiana_projections.csv`: This file contains information about the projections of the images. It includes UIDs and projection types.
+
+## Model
+
+The SwinV2 model implemented in this project is a modified version of the Swin Transformer specifically designed for visual feature extraction. It utilizes the Swin Transformer architecture as the backbone to extract visual features from input images.
+
+The `SwinV2` class in the `swinv2.py` script encapsulates the SwinV2 model and provides an interface for feature extraction. The backbone of the model is loaded with pre-trained weights, which can be customized by providing a URL to the `weights` parameter in the constructor.
+
+## References
+
+- Liu, Z., et al. (2021). Swin Transformer: Hierarchical Vision Transformer using Shifted Windows. _arXiv preprint arXiv:2103.14030_.
+
+- PyTorch Documentation: [https://pytorch.org/docs/stable/index.html](https://pytorch.org/docs/stable/index.html)
+
+- torchvision Documentation: [https://pytorch.org/vision/stable/index.html](https://pytorch.org/vision/stable/index.html)
+
+
+
+
